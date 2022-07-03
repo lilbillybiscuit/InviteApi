@@ -1,7 +1,14 @@
 var database = require('../db');
 var tools = require('../tools');
 
+const tokencollection = database.getdatabase().collection('tokens');
+const sessioncollection = database.getdatabase().collection('sessions');
+const accountcollection = database.getdatabase().collection('accounts');
+
+
 exports.get_user_email_settings = async function (request, result) {
+
+  
   result.json({
     success: true,
     settings: {

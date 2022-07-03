@@ -31,5 +31,5 @@ module.exports.get = () => {
 };
 module.exports.getdatabase = () => {
   if (!connection) throw new Error("Call connect first!");
-  return connection.db("invite");
+  return connection.db(require("../config").mongodbname);
 };

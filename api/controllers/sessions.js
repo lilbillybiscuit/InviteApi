@@ -29,11 +29,12 @@ exports.simpleAuth = async function (request, result) {
   }
 
   //Assign a new session
-  var sessionID = tools.generate_string(100);
-  var ins = await sessioncollection.insertOne({
-    _id: sessionID,
+  var accountID = tools.generate_string(20);
+  var hasFullAccess = token.uses == 0;
+
+  var insertaccount = await accountcollection.insertOne({
+    _id: accountID,
     username: "",
-    accountID: null,
     invitedby: token.invitedby,
     rsvp: false,
     email: "",
@@ -41,31 +42,59 @@ exports.simpleAuth = async function (request, result) {
     allowEmails: false,
     decision: null,
     plusones: [],
+    fullAccess: hasFullAccess,
     invitation: {
-
     },
     settings: {
       notifyActivityInvolvingMe: false,
       notifyEventActivity: false,
       notifyGuestRSVP: false,
     },
-
   });
-
-
+  request.session.accountid = accountID;
   result.json({
     success: true,
     status: 200,
     message: "Token verified",
-    session: sessionID,
+    account: accountID,
   })
-  
-
 }
+//Request parameters: "session"
+//Return: JSON with an account ID named "account"
+
+exports.get_account_from_session = async function (request, result) {
+  if (typeof request.headers.session == "undefined") {
+    result.status(403).send({
+      success: false,
+      message: "No account",
+    });
+    return;
+  }
+  var session = await sessioncollection.findOne({ _id: request.headers.session });
+  if (session === null) {
+    result.status(403).send({
+      success: false,
+      message: "No account",
+    });
+    return;
+  }
+
+  var retAccountID = session.accountID;
+  result.json({
+    success: true,
+    account: retAccountID,
+  });
+}
+
+
 
 exports.get_name = async function (request, result) {
   result.json({
     success: true,
     name: "John Doe",
   })
+}
+
+exports.change_account_id = async function (request, result) {
+
 }

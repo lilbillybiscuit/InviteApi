@@ -4,4 +4,6 @@ module.exports = {
     "your_secret_key_here",
   mongodburl:
     "mongodb://localhost:27017/invite",
+  baseurl: "http://localhost:5000", //do not include trailing /
+  cookieSecret: "some private key"
 };
