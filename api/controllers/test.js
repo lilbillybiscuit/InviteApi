@@ -1,4 +1,4 @@
-exports.returnSuccess = async function (request, result) {
+exports.returnSuccess = function (request, result) {
   result.json({
     success: true,
     status: 200,
@@ -8,7 +8,7 @@ exports.returnSuccess = async function (request, result) {
   return;
 };
 
-exports.returnError = async function (request, result, message) {
+exports.returnError = function (request, result, message) {
   result.status(500).json({
     success: false,
     status: 500,

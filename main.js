@@ -1,55 +1,27 @@
-var express = require("express"),
-  app = express(),
-  port = process.env.PORT || 8000
+const cluster = require("cluster");
+const totalCPUs =
+  process.env.NODE_ENV === "production" ? require("os").cpus().length : 1;
+const maxAttempts = 1;
+var attempts = 0;
+if (cluster.isMaster) {
+  console.log(`Master PID: ${process.pid}`);
+  console.log(`Spawning ${totalCPUs} workers`);
 
-var cors = require("cors");
-var config = require("./config");
-var cookieParser = require('cookie-parser');
-const MongoStore = require('connect-mongo');
-
-//if (config.production) app.use(cors({ origin: "http://3.16.107.216" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(express.json({ limit: "50mb" }));
-app.use(cors({
-  origin: "*",
-}));
-
-app.use(session({
-	secret: config.cookieSecret,
-	resave: false,
-	saveUninitialized: false,
-  unset: "keep",
-  cookie: {
-    secure: config.production, //production on = https should be on
-    maxAge: config.cookieMaxAge,
+  for (let i = 0; i < totalCPUs; i++) {
+    cluster.fork();
   }
-  store: MongoStore.create({
-    mongoUrl: config.mongodburl,
-    autoRemove: "native"
-    dbName: config.mongodbname,
-    crypto: {
-      secret: config.cookieMongoSecret
+
+  cluster.on("exit", (worker, code, signal) => {
+    if (process.env.NODE_ENV === "production" || attempts < maxAttempts) {
+      console.log(`Worker ${worker.process.pid} exited`);
+      cluster.fork();
+      attempts++;
+    } else {
+      console.log("Error, too many worker failures during debug");
+      process.exit(0);
     }
-  }),
-}));
-
-var routes = null;
-
-const database = require("./api/db");
-
-database
-  .connect()
-  .then(() => console.log("Connected to database"))
-  .then(() => {
-    routes = require("./api/routes/listroutes"); //importing route
-    
-    
-    routes(app); //register the route
-    app.listen(port);
-    console.log("Invite API server started on: http://localhost:" + port);
   });
-
-process.on("SIGINT", function () {
-  console.log("Stopping server...");
-  process.exit();
-});
+} else {
+  var app = require("./app");
+  app.listen();
+}

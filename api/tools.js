@@ -10,8 +10,8 @@ exports.verify_token2 = async function (token) {
       success: false,
       ret: {
         success: false,
-        message: "Not logged in"
-      }
+        message: "Not logged in",
+      },
     };
   }
   var verify = this.verify_token(token);
@@ -20,15 +20,15 @@ exports.verify_token2 = async function (token) {
       success: false,
       ret: {
         success: false,
-        message: "Invalid token"
-      }
+        message: "Invalid token",
+      },
     };
   }
   return {
     success: true,
     message: "Token verified",
     access_level: verify.access_level,
-    username: verify.username
+    username: verify.username,
   };
 };
 
@@ -105,11 +105,17 @@ exports.new_token_test = async function (username) {
 };
 exports.generate_string = function (len) {
   var token = crypto.randomBytes(Math.ceil((len * 3) / 4)).toString("base64");
-  return token.substring(0, len).replaceAll("+", "=").replaceAll("/", "-");
+  token = token.substring(0, len).replaceAll("+", "=").replaceAll("/", "-");
+  return "0" + token.substring(1);
 };
 
+exports.generate_token_hex = function(len) {
+  var str = this.generate_hex(len);
+  return "0"+str.substring(1);
+}
+
 exports.generate_hex = function (len) {
-  var token = crypto.randomBytes(Math.ceil(len/2)).toString("hex");
+  var token = crypto.randomBytes(Math.ceil(len / 2)).toString("hex");
   return token.substring(0, len);
 };
 exports.get_expires = function (hours_ahead) {
@@ -140,4 +146,28 @@ exports.get_counter = async function (id) {
 
 exports.getRandomInt = function (max) {
   return Math.floor(Math.random() * max);
+};
+
+exports.check_not_string = function () {
+  for (var i = 0; i < arguments.length; i++) {
+    if (typeof arguments[i] !== "string") return false;
+  }
+  return true;
+};
+
+exports.check_not_null = function () {
+  for (var i = 0; i < arguments.length; i++) {
+    if (arguments[i] === null) {
+      return false;
+    }
+  }
+  return true;
+};
+
+exports.check_letters_only = function (str) {
+  return /^[A-Za-z\s]*$/.test(str); //Only letters and spaces
+};
+
+exports.capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

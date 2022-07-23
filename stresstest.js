@@ -9,11 +9,11 @@ MongoClient.connect(config.mongodburl, function(err, client) {
     db = client.db("test");
     let collection = "resumes";
     var inserts = [];
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10000; i++) {
         inserts.push(queryInsertPromise(collection, {name: i}));
     }
     var queries = [];
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10000; i++) {
         queries.push(queryPromise(collection, {name: i}));
     }
     console.log("Started");

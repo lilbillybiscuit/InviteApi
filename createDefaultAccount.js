@@ -31,7 +31,7 @@ async function run() {
       _id: accountID,
       username: accountUsername,
       invitedby: null,
-      rsvp: false,
+      rsvp: null,
       email: "",
       name: "",
       admin: true,

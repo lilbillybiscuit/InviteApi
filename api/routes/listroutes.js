@@ -5,13 +5,35 @@ const con = null;
 module.exports = function (app) {
   var tests = require("../controllers/test");
   var usersettings = require("../controllers/settings");
+
+  //Account-related routes
   var accounts = require("../controllers/accounts");
-  app.route("/api/success").get(tests.returnSuccess);
-  app.route("/api/error").get(tests.returnError);
+  app.route("/api/token/create").post(accounts.create_valid_token);
+
+  app.route("/api/success").all(tests.returnSuccess);
+  app.route("/api/error").all(tests.returnError);
 
   app.route("/api/usersettings").get(usersettings.get_user_email_settings);
-  app.route("/api/setusersetting").post(usersettings.set_user_email_settings);
+  app.route("/api/usersettings/update").post(usersettings.set_user_email_settings);
 
-  app.route("/api/create_token").post(accounts.create_valid_token);
+  app.route("/api/tokens/create").post(accounts.create_valid_token);
+  app.route("/api/tokens/delete").post(accounts.delete_token);
+  //Session-related routes
+  var sessions = require("../controllers/sessions");
+  app.route("/api/session/getid").get(sessions.get_account_id);
+  app.route("/api/session/getname").get(sessions.get_account_username);
+  app.route("/api/session/auth").post(sessions.simpleAuth);
+  app.route("/api/session/changeaccount").post(sessions.change_account);
   
+  var rsvp = require("../controllers/rsvp");
+  app.route("/api/rsvp/create").post(rsvp.RSVP);
+  app.route("/api/rsvp/get").get(rsvp.getCurrentRSVP);
+
+  var wifi = require("../controllers/wifi");
+  app.route("/api/wifi/get").get(wifi.getWifi);
+
+  var guests = require("../controllers/guests");
+  app.route("/api/guests/get/all").get(guests.getFullGuestList);
+  app.route("/api/guests/get/pending").get(guests.getGuestListPending);
+  app.route("/api/guests/get/guests").get(guests.getGuestListOnly);
 };
