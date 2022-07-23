@@ -6,7 +6,7 @@ var tokencollection = database.getdatabase().collection("tokens");
 var config = require("../../config");
 exports.getFullGuestList = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -16,7 +16,7 @@ exports.getFullGuestList = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -75,7 +75,7 @@ async function guestListOnly() {
 }
 exports.getGuestListOnly = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -114,7 +114,7 @@ async function guestListPending(account) {
 }
 exports.getGuestListPending = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -124,7 +124,7 @@ exports.getGuestListPending = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -140,7 +140,7 @@ exports.getGuestListPending = async function (request, result) {
 
 exports.getPartyInfo = function (request, result) {
   if (!request.session.accountid) {
-    result.status(403).json({
+    result.status(400).json({
       success: false,
       message: "Invalid Session",
     });

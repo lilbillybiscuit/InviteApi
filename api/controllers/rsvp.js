@@ -18,7 +18,7 @@ var validator = require("validator");
 
 exports.getCurrentRSVP = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -31,7 +31,7 @@ exports.getCurrentRSVP = async function (request, result) {
   });
 
   if (accountDetails === null) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -63,7 +63,7 @@ exports.getCurrentRSVP = async function (request, result) {
 
 exports.RSVP = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -75,7 +75,7 @@ exports.RSVP = async function (request, result) {
     _id: accountID,
   });
   if (accountDetails === null) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -95,7 +95,7 @@ exports.RSVP = async function (request, result) {
       request.body.optionalComments
     )
   ) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -112,7 +112,7 @@ exports.RSVP = async function (request, result) {
       request.body.arrivalEnd
     )
   ) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "invalid parameter 2",
@@ -144,7 +144,7 @@ exports.RSVP = async function (request, result) {
   if (typeof data.waterfight !== "boolean") validRequest = false;
 
   if (!validRequest) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "invalid parameter 3",
@@ -155,7 +155,7 @@ exports.RSVP = async function (request, result) {
   var arrivalStartTime = new Date(arrivalStart);
   var arrivalEndTime = new Date(arrivalEnd);
   if (arrivalStartTime > arrivalEndTime) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       status: 400,
       message: "invalid parameter 4",
@@ -178,7 +178,7 @@ exports.RSVP = async function (request, result) {
     { upsert: true }
   );
   if (accountUpdate.modifiedCount === 0) {
-    result.status(403).send({
+    result.status(400).send({
       success: false,
       message: "failed to update account",
     });
