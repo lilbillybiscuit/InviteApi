@@ -7,6 +7,8 @@ var arrivaltimecollection = database.getdatabase().collection("arrivaltimes");
 var activitycollection = database.getdatabase().collection("activity");
 var rsvpcollection = database.getdatabase().collection("rsvp");
 var validator = require("validator");
+var config = require("../../config");
+var moment = require("moment");
 // Request body should include:
 // rsvp: 'yes', 'no','maybe' (and nothing else)
 // name: string
@@ -15,7 +17,9 @@ var validator = require("validator");
 // arrivalStart: integer
 // arrivalEnd: integer
 // optionalComments: string (large)
-
+const PARTY_START = moment(new Date(config.partyInfo.partyStart));
+const PARTY_END = moment(new Date(config.partyInfo.partyEnd));
+const PARTY_DURATION = PARTY_END.diff(PARTY_START, "minutes");
 exports.getCurrentRSVP = async function (request, result) {
   if (!request.session.accountid) {
     result.status(400).send({
@@ -108,14 +112,20 @@ exports.RSVP = async function (request, result) {
       request.body.name,
       request.body.email,
       request.body.optionalComments,
-      request.body.arrivalStart,
-      request.body.arrivalEnd
     )
   ) {
     result.status(400).send({
       success: false,
       status: 400,
       message: "invalid parameter 2",
+    });
+    return;
+  }
+  if (typeof request.body.arrivalStart !== "number" || typeof request.body.arrivalEnd !== "number") {
+    result.status(400).send({
+      success: false,
+      status: 400,
+      message: "invalid parameter 3",
     });
     return;
   }
@@ -133,10 +143,9 @@ exports.RSVP = async function (request, result) {
   if (!/^[A-Za-z\s]+$/.test(name)) validRequest = false;
   if (!validator.isEmail(email)) validRequest = false;
   if (typeof allowEmails !== "boolean") validRequest = false;
-  
   if (
     rsvp !== "no" &&
-    (!validator.isISO8601(arrivalStart) || !validator.isISO8601(arrivalEnd))
+    (0>arrivalStart || arrivalStart > arrivalEnd || arrivalEnd > PARTY_DURATION)
   )
     validRequest = false;
   
@@ -152,23 +161,13 @@ exports.RSVP = async function (request, result) {
     return;
   }
 
-  var arrivalStartTime = new Date(arrivalStart);
-  var arrivalEndTime = new Date(arrivalEnd);
-  if (arrivalStartTime > arrivalEndTime) {
-    result.status(400).send({
-      success: false,
-      status: 400,
-      message: "invalid parameter 4",
-    });
-    return;
-  }
   var newAccount = {
     rsvp: rsvp,
     name: name,
     email: email,
     allowEmails: allowEmails,
-    arrivalStart: arrivalStartTime,
-    arrivalEnd: arrivalEndTime,
+    arrivalStart: arrivalStart,
+    arrivalEnd: arrivalEnd,
     optionalComments: optionalComments,
     waterfight: data.waterfight ?? false,
   };

@@ -4,6 +4,10 @@ var accountcollection = database.getdatabase().collection("accounts");
 var sessioncollection = database.getdatabase().collection("sessions");
 var tokencollection = database.getdatabase().collection("tokens");
 var config = require("../../config");
+var moment = require("moment");
+const PARTY_START = moment(new Date(config.partyInfo.partyStart));
+const PARTY_END = moment(new Date(config.partyInfo.partyEnd));
+const PARTY_DURATION = PARTY_END.diff(PARTY_START, "minutes");
 exports.getFullGuestList = async function (request, result) {
   if (!request.session.fullAccess) {
     result.status(400).json({
@@ -60,7 +64,7 @@ async function guestListOnly() {
       temp.invitedby = accountcache[elem.invitedby.accountID];
     } else {
       var tempAcc = await accountcollection.findOne({
-        _id: elem.invitedby.accountID
+        _id: elem.invitedby.accountID,
       });
       if (tempAcc === null) {
         temp.invitedby = "Unknown";
@@ -133,7 +137,7 @@ exports.getGuestListPending = async function (request, result) {
 
   var ret = {
     success: true,
-    guests: guestListPending(accountDetails),
+    guests: await guestListPending(accountDetails),
   };
   result.json(ret);
 };
@@ -146,4 +150,49 @@ exports.getPartyInfo = function (request, result) {
     });
     return;
   }
+};
+
+exports.getTimeline = async function (request, result) {
+  if (!request.session.accountid) {
+    result.status(400).json({
+      success: false,
+      message: "Invalid Session",
+    });
+    return;
+  }
+
+  const pipeline1 = [
+    { $match: { rsvp: { $in: ["yes", "maybe"] } } },
+    {
+      $group: {
+        _id: "$arrivalStart",
+        count: { $sum: 1 },
+      },
+    },
+  ];
+  const pipeline2 = [
+    { $match: { rsvp: { $in: ["yes", "maybe"] } } },
+    {
+      $group: {
+        _id: "$arrivalEnd",
+        count: { $sum: -1 },
+      },
+    },
+  ];
+  var aggQuery1 = accountcollection.aggregate(pipeline1);
+  var aggQuery2 = accountcollection.aggregate(pipeline2);
+  
+  var arr = Array.apply(null, Array(PARTY_DURATION+1)).map(function () {return 0;})
+  console.log(arr);
+  for await (const doc of aggQuery1) {
+    arr[doc._id] += doc.count;
+  }
+  for await (const doc of aggQuery2) {
+    arr[doc._id] += doc.count;
+  }
+  var ret2 = [arr[0]];
+  for (var i = 1; i < arr.length; i++) {
+    ret2.push(ret2[i-1] + arr[i]);
+  }
+  result.json({success: true, timeline: ret2});
 };

@@ -85,7 +85,7 @@ exports.create_valid_token = async function (request, result) {
     status: 200,
     message: "Success",
     token: token,
-    shareUrl: config.baseUrl + "/" + token,
+    shareUrl: config.websiteUrl + "/" + token,
   });
 };
 

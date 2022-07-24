@@ -32,8 +32,12 @@ module.exports = function (app) {
   var wifi = require("../controllers/wifi");
   app.route("/api/wifi/get").get(wifi.getWifi);
 
+  var info = require("../controllers/info");
+  app.route("/api/info/get").get(info.get_info);
+  app.route("/api/info/initialmessage").get(info.get_initial_message);
   var guests = require("../controllers/guests");
   app.route("/api/guests/get/all").get(guests.getFullGuestList);
   app.route("/api/guests/get/pending").get(guests.getGuestListPending);
   app.route("/api/guests/get/guests").get(guests.getGuestListOnly);
+  app.route("/api/guests/get/timeline").get(guests.getTimeline);
 };
