@@ -6,7 +6,7 @@ var cors = require("cors");
 var config = require("./config");
 var session = require("express-session");
 const MongoStore = require("connect-mongo");
-
+require('dotenv').config()
 //if (config.production) app.use(cors({ origin: "http://3.16.107.216" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));

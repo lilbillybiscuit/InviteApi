@@ -1,0 +1,8 @@
+{
+  "Template": {
+    "TemplateName": "InviteApiConfirmation",
+    "SubjectPart": "Thanks for RSVPing, {{name}}!",
+    "HtmlPart": "<h1>Bill's Grad Party</h1><h6>Hello {{name}},</h6><p>You RSVPed {{rsvp}} for {{guestCount}} guests. For future reference, your account ID is {{accountid}}.",
+    "TextPart": "Hello {{name}},You RSVPed {{rsvp}} for {{guestCount}} guests. For future reference, your account ID is {{accountid}}."
+  }
+}

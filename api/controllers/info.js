@@ -23,7 +23,7 @@ exports.get_info = async function (request, result) {
       {
         $group: {
           _id: "$rsvp",
-          count: { $sum: 1 },
+          count: { $sum: "$guestCount" },
         },
       },
     ];
@@ -32,7 +32,6 @@ exports.get_info = async function (request, result) {
     for await (const doc of aggCursor) {
       tempObj[doc._id] = doc.count;
     }
-    console.log(tempObj);
     result.json({
       success: true,
       title: config.partyInfo.title,

@@ -1,7 +1,7 @@
 const cluster = require("cluster");
 const totalCPUs =
   process.env.NODE_ENV === "production" ? require("os").cpus().length : 1;
-const maxAttempts = 1;
+  const maxAttempts = 1;
 var attempts = 0;
 if (cluster.isMaster) {
   console.log(`Master PID: ${process.pid}`);

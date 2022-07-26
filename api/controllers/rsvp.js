@@ -9,6 +9,7 @@ var rsvpcollection = database.getdatabase().collection("rsvp");
 var validator = require("validator");
 var config = require("../../config");
 var moment = require("moment");
+var emailHandler = require("./email");
 // Request body should include:
 // rsvp: 'yes', 'no','maybe' (and nothing else)
 // name: string
@@ -61,6 +62,7 @@ exports.getCurrentRSVP = async function (request, result) {
       arrivalStart: accountDetails.arrivalStart,
       arrivalEnd: accountDetails.arrivalEnd,
       optionalComments: accountDetails.optionalComments ?? "",
+      guestCount: accountDetails.guestCount ?? 1,
     },
   });
 };
@@ -111,7 +113,7 @@ exports.RSVP = async function (request, result) {
       request.body.rsvp,
       request.body.name,
       request.body.email,
-      request.body.optionalComments,
+      request.body.optionalComments
     )
   ) {
     result.status(400).send({
@@ -121,7 +123,11 @@ exports.RSVP = async function (request, result) {
     });
     return;
   }
-  if (typeof request.body.arrivalStart !== "number" || typeof request.body.arrivalEnd !== "number") {
+  if (
+    typeof request.body.arrivalStart !== "number" ||
+    typeof request.body.arrivalEnd !== "number" ||
+    typeof request.body.guestCount !== "number"
+  ) {
     result.status(400).send({
       success: false,
       status: 400,
@@ -138,6 +144,7 @@ exports.RSVP = async function (request, result) {
   var arrivalEnd = data.arrivalEnd;
   var optionalComments = data.optionalComments;
   var validRequest = true;
+  var guestCount = data.guestCount;
   if (rsvp !== "yes" && rsvp !== "no" && rsvp !== "maybe") validRequest = false;
 
   if (!/^[A-Za-z\s]+$/.test(name)) validRequest = false;
@@ -145,13 +152,15 @@ exports.RSVP = async function (request, result) {
   if (typeof allowEmails !== "boolean") validRequest = false;
   if (
     rsvp !== "no" &&
-    (0>arrivalStart || arrivalStart > arrivalEnd || arrivalEnd > PARTY_DURATION)
+    (0 > arrivalStart ||
+      arrivalStart > arrivalEnd ||
+      arrivalEnd > PARTY_DURATION)
   )
     validRequest = false;
-  
+
   if (typeof optionalComments !== "string") validRequest = false;
   if (typeof data.waterfight !== "boolean") validRequest = false;
-
+  if (guestCount < 1 || guestCount > 5) validRequest = false;
   if (!validRequest) {
     result.status(400).send({
       success: false,
@@ -170,13 +179,15 @@ exports.RSVP = async function (request, result) {
     arrivalEnd: arrivalEnd,
     optionalComments: optionalComments,
     waterfight: data.waterfight ?? false,
+    validEmail: true,
+    guestCount: guestCount,
   };
   var accountUpdate = await accountcollection.updateOne(
     { _id: accountID },
     { $set: newAccount },
     { upsert: true }
   );
-  if (accountUpdate.modifiedCount === 0) {
+  if (accountUpdate.matchedCount === 0) {
     result.status(400).send({
       success: false,
       message: "failed to update account",
@@ -192,6 +203,16 @@ exports.RSVP = async function (request, result) {
         },
       }
     );
+  }
+  if (allowEmails && rsvpType==="create") {
+    emailHandler.send_confirmation({
+      name: name,
+      email: email,
+      accountid: accountID,
+      rsvp: rsvp,
+      guestCount: guestCount,
+    });
+    console.log("sent email");
   }
 
   result.json({

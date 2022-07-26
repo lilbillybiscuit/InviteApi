@@ -177,7 +177,6 @@ exports.change_account = async function (request, result) {
 
   request.session.accountid = request.body.accountid;
   request.session.fullAccess = accountdetails.fullAccess;
-  console.log(request.session);
   result.json({
     success: true,
     accountid: request.body.accountid,

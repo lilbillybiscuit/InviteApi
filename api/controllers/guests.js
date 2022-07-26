@@ -104,7 +104,6 @@ async function guestListPending(account) {
     })
     .toArray();
   return pendingList.map((elem) => {
-    console.log(elem);
     return {
       id: elem._id,
       name: elem.intendedfor,
@@ -183,7 +182,6 @@ exports.getTimeline = async function (request, result) {
   var aggQuery2 = accountcollection.aggregate(pipeline2);
   
   var arr = Array.apply(null, Array(PARTY_DURATION+1)).map(function () {return 0;})
-  console.log(arr);
   for await (const doc of aggQuery1) {
     arr[doc._id] += doc.count;
   }

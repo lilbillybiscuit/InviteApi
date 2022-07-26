@@ -40,4 +40,9 @@ module.exports = function (app) {
   app.route("/api/guests/get/pending").get(guests.getGuestListPending);
   app.route("/api/guests/get/guests").get(guests.getGuestListOnly);
   app.route("/api/guests/get/timeline").get(guests.getTimeline);
+
+  var email = require("../controllers/email");
+  app.route("/api/email/bounce").post(email.bounce_email);
+  app.route("/api/email/complaint").post(email.complaint_email);
+
 };
