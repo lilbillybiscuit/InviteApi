@@ -45,7 +45,7 @@ exports.send_confirmation = async function (data) {
 };
 //This should only be called from a Lambda function (like one subscribed to an SNS topic)
 exports.bounce_email = async function (request, result) {
-  if (!request.params.token || !request.params.accountid) {
+  if (!request.params.token || !request.body.email) {
     result.status(400).send({
       success: false,
       status: 400,
@@ -61,14 +61,14 @@ exports.bounce_email = async function (request, result) {
     });
     return;
   }
-  var accountID = request.params.accountid;
-  var updateAccount = await accountcollection.updateOne(
+  var email = request.body.email;
+  var updateAccount = await accountcollection.update(
     {
-      _id: accountID,
+      _id: email,
     },
     {
       $set: {
-        validEmail: false,
+        allowEmails: false,
       },
     }
   );
@@ -88,7 +88,7 @@ exports.bounce_email = async function (request, result) {
 };
 
 exports.complaint_email = async function (request, result) {
-  if (!request.params.token || !request.params.accountid) {
+  if (!request.params.token || !request.body.email) {
     result.status(400).send({
       success: false,
       status: 400,
@@ -104,10 +104,10 @@ exports.complaint_email = async function (request, result) {
     });
     return;
   }
-  var accountID = request.params.accountid;
-  var updateAccount = await accountcollection.updateOne(
+  var email = request.body.email;
+  var updateAccount = await accountcollection.update(
     {
-      _id: accountID,
+      _id: email,
     },
     {
       $set: {
