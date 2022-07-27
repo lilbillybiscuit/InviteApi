@@ -61,6 +61,7 @@ exports.bounce_email = async function (request, result) {
     });
     return;
   }
+  console.log("Email bounced")
   var email = request.body.email;
   var updateAccount = await accountcollection.update(
     {
@@ -104,6 +105,7 @@ exports.complaint_email = async function (request, result) {
     });
     return;
   }
+  console.log("Email complaint")
   var email = request.body.email;
   var updateAccount = await accountcollection.update(
     {
