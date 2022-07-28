@@ -11,7 +11,7 @@ exports.create_valid_token = async function (request, result) {
   var useSecret = false;
   if ("adminsecret" in request.body) {
     if (request.body.adminsecret != config.initialSecretKey) {
-      result.status(204).send({
+      result.status(299).send({
         success: false,
         status: 400,
         message: "missing parameter",
@@ -21,7 +21,7 @@ exports.create_valid_token = async function (request, result) {
     useSecret = true;
   } else {
     if (!request.session.accountid) {
-      result.status(204).send({
+      result.status(299).send({
         success: false,
         status: 400,
         message: "missing parameter",
@@ -31,7 +31,7 @@ exports.create_valid_token = async function (request, result) {
   }
   console.log(request.body);
   if (!request.body.intendedfor) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "A name must be assigned to this token",
@@ -41,7 +41,7 @@ exports.create_valid_token = async function (request, result) {
   var data = useSecret ? { admin: true } : { _id: request.session.accountid };
   var accountDetails = await accountcollection.findOne(data);
   if (accountDetails === null) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "invalid account",
@@ -49,7 +49,7 @@ exports.create_valid_token = async function (request, result) {
     return;
   }
   if (!accountDetails.fullAccess) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "Account does not have full access",
@@ -91,7 +91,7 @@ exports.create_valid_token = async function (request, result) {
 
 exports.delete_token = async function (request, result) {
   if (!request.session.accountid || !request.session.fullAccess) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -99,7 +99,7 @@ exports.delete_token = async function (request, result) {
     return;
   }
   if (!("token" in request.body)) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -108,7 +108,7 @@ exports.delete_token = async function (request, result) {
   }
   var token = await tokencollection.findOne({ _id: request.body.token });
   if (token === null) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "invalid token",

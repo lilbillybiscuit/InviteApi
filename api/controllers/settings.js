@@ -7,7 +7,7 @@ const accountcollection = database.getdatabase().collection("accounts");
 
 exports.get_user_email_settings = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -19,7 +19,7 @@ exports.get_user_email_settings = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -42,7 +42,7 @@ exports.get_user_email_settings = async function (request, result) {
 
 exports.set_user_email_settings = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -54,7 +54,7 @@ exports.set_user_email_settings = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -86,7 +86,7 @@ exports.set_user_email_settings = async function (request, result) {
     updateQuery
   );
   if (updateResult.matchedCount === 0) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       status: 400,
       message: "Something went wrong",

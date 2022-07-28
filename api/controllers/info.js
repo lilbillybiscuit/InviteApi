@@ -5,7 +5,7 @@ var accountcollection = db.getdatabase().collection("accounts");
 
 exports.get_info = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       title: config.partyInfo.title,
       message: "missing parameter",
@@ -47,7 +47,7 @@ exports.get_info = async function (request, result) {
 
 exports.get_initial_message = function(request, result) {
   if (!request.session.accountid) {
-    result.status(204).send({
+    result.status(299).send({
       success: false,
       message: "",
     })
