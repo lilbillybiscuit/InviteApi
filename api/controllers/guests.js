@@ -10,7 +10,7 @@ const PARTY_END = moment(new Date(config.partyInfo.partyEnd));
 const PARTY_DURATION = PARTY_END.diff(PARTY_START, "minutes");
 exports.getFullGuestList = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -20,7 +20,7 @@ exports.getFullGuestList = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -79,7 +79,7 @@ async function guestListOnly() {
 }
 exports.getGuestListOnly = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -117,7 +117,7 @@ async function guestListPending(account) {
 }
 exports.getGuestListPending = async function (request, result) {
   if (!request.session.fullAccess) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -127,7 +127,7 @@ exports.getGuestListPending = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Your session does not have access to this resource.",
     });
@@ -143,7 +143,7 @@ exports.getGuestListPending = async function (request, result) {
 
 exports.getPartyInfo = function (request, result) {
   if (!request.session.accountid) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Invalid Session",
     });
@@ -153,7 +153,7 @@ exports.getPartyInfo = function (request, result) {
 
 exports.getTimeline = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Invalid Session",
     });
@@ -197,7 +197,7 @@ exports.getTimeline = async function (request, result) {
 
 exports.getWaterFight = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(299).json({
+    result.status(401).json({
       success: false,
       message: "Invalid Session",
     });

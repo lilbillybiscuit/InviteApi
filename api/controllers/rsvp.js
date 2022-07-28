@@ -23,7 +23,7 @@ const PARTY_END = moment(new Date(config.partyInfo.partyEnd));
 const PARTY_DURATION = PARTY_END.diff(PARTY_START, "minutes");
 exports.getCurrentRSVP = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -36,7 +36,7 @@ exports.getCurrentRSVP = async function (request, result) {
   });
 
   if (accountDetails === null) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -44,7 +44,7 @@ exports.getCurrentRSVP = async function (request, result) {
     return;
   }
   if (accountDetails.rsvp === null) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "You have not RSVP'd yet",
@@ -69,7 +69,7 @@ exports.getCurrentRSVP = async function (request, result) {
 
 exports.RSVP = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -81,7 +81,7 @@ exports.RSVP = async function (request, result) {
     _id: accountID,
   });
   if (accountDetails === null) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -101,7 +101,7 @@ exports.RSVP = async function (request, result) {
       request.body.optionalComments
     )
   ) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -116,7 +116,7 @@ exports.RSVP = async function (request, result) {
       request.body.optionalComments
     )
   ) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "invalid parameter 2",
@@ -128,7 +128,7 @@ exports.RSVP = async function (request, result) {
     typeof request.body.arrivalEnd !== "number" ||
     typeof request.body.guestCount !== "number"
   ) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "invalid parameter 3",
@@ -162,7 +162,7 @@ exports.RSVP = async function (request, result) {
   if (typeof data.waterfight !== "boolean") validRequest = false;
   if (guestCount < 1 || guestCount > 5) validRequest = false;
   if (!validRequest) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       status: 400,
       message: "invalid parameter 3",
@@ -188,7 +188,7 @@ exports.RSVP = async function (request, result) {
     { upsert: true }
   );
   if (accountUpdate.matchedCount === 0) {
-    result.status(299).send({
+    result.status(401).send({
       success: false,
       message: "failed to update account",
     });
