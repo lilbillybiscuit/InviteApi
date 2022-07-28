@@ -165,7 +165,7 @@ exports.getTimeline = async function (request, result) {
     {
       $group: {
         _id: "$arrivalStart",
-        count: { $sum: 1 },
+        count: { $sum: "$guestCount" },
       },
     },
   ];
@@ -174,7 +174,7 @@ exports.getTimeline = async function (request, result) {
     {
       $group: {
         _id: "$arrivalEnd",
-        count: { $sum: -1 },
+        count: { $sum: "$guestCount" },
       },
     },
   ];
@@ -186,7 +186,7 @@ exports.getTimeline = async function (request, result) {
     arr[doc._id] += doc.count;
   }
   for await (const doc of aggQuery2) {
-    arr[doc._id] += doc.count;
+    arr[doc._id] -= doc.count;
   }
   var ret2 = [arr[0]];
   for (var i = 1; i < arr.length; i++) {
@@ -194,3 +194,27 @@ exports.getTimeline = async function (request, result) {
   }
   result.json({success: true, timeline: ret2});
 };
+
+exports.getWaterFight = async function (request, result) {
+  if (!request.session.accountid) {
+    result.status(400).json({
+      success: false,
+      message: "Invalid Session",
+    });
+    return;
+  }
+  const pipeline1 = [
+    { $match: { rsvp: { $in: ["yes", "maybe"] }, waterfight: true } },
+    {
+      $group: {
+        _id: "$waterfight",
+        count: { $sum: 1 },
+      },
+    },
+  ];
+  var aggQuery1 = accountcollection.aggregate(pipeline1);
+  for await (const doc of aggQuery1) {
+    result.json({success: true, count: doc.count});
+    return;
+  }
+}

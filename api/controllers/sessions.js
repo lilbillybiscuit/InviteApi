@@ -85,7 +85,7 @@ exports.get_account_id = async function (request, result) {
   }
   result.json({
     success: true,
-    token: accountdetails.token._id,
+    token: accountdetails.token? accountdetails.token._id : null,
     accountid: request.session.accountid,
     fullAccess: request.session.fullAccess ?? false,
   });

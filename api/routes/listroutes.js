@@ -40,6 +40,7 @@ module.exports = function (app) {
   app.route("/api/guests/get/pending").get(guests.getGuestListPending);
   app.route("/api/guests/get/guests").get(guests.getGuestListOnly);
   app.route("/api/guests/get/timeline").get(guests.getTimeline);
+  app.route("/api/guests/get/waterfight").get(guests.getWaterFight);
 
   var email = require("../controllers/email");
   app.route("/api/email/bounce").post(email.bounce_email);
