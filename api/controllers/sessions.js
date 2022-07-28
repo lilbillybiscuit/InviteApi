@@ -58,6 +58,12 @@ exports.simpleAuth = async function (request, result) {
     message: "Token verified",
     account: accountID,
   });
+  console.log({
+    success: true,
+    status: 200,
+    message: "Token verified",
+    account: accountID,
+  })
 };
 //Request parameters: "session"
 //Return: JSON with an account ID named "account"
