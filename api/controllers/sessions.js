@@ -5,6 +5,7 @@ var accountcollection = database.getdatabase().collection("accounts");
 var tokencollection = database.getdatabase().collection("tokens");
 
 exports.simpleAuth = async function (request, result) {
+  console.log("Server hit");
   //check if the request contains a token
   if (typeof request.body.token == "undefined") {
     result.send({
@@ -58,12 +59,6 @@ exports.simpleAuth = async function (request, result) {
     message: "Token verified",
     account: accountID,
   });
-  console.log({
-    success: true,
-    status: 200,
-    message: "Token verified",
-    account: accountID,
-  })
 };
 //Request parameters: "session"
 //Return: JSON with an account ID named "account"
