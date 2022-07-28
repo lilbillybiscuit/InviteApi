@@ -46,7 +46,7 @@ exports.send_confirmation = async function (data) {
 //This should only be called from a Lambda function (like one subscribed to an SNS topic)
 exports.bounce_email = async function (request, result) {
   if (!request.params.token || !request.body.email) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -54,7 +54,7 @@ exports.bounce_email = async function (request, result) {
     return;
   }
   if (request.params.token !== config.email_control_key) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid token",
@@ -74,7 +74,7 @@ exports.bounce_email = async function (request, result) {
     }
   );
   if (updateAccount.modifiedCount === 0) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid account",
@@ -90,7 +90,7 @@ exports.bounce_email = async function (request, result) {
 
 exports.complaint_email = async function (request, result) {
   if (!request.params.token || !request.body.email) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -98,7 +98,7 @@ exports.complaint_email = async function (request, result) {
     return;
   }
   if (request.params.token !== config.email_control_key) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid token",
@@ -118,7 +118,7 @@ exports.complaint_email = async function (request, result) {
     }
   );
   if (updateAccount.modifiedCount === 0) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid account",

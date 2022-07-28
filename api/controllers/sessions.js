@@ -71,7 +71,7 @@ exports.simpleAuth = async function (request, result) {
 exports.get_account_id = async function (request, result) {
 
   if (!request.session.accountid) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -82,7 +82,7 @@ exports.get_account_id = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountdetails === null) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -100,7 +100,7 @@ exports.get_account_id = async function (request, result) {
 
 exports.change_account_username = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -108,7 +108,7 @@ exports.change_account_username = async function (request, result) {
     return;
   }
   if (!("username" in request.body)) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -121,7 +121,7 @@ exports.change_account_username = async function (request, result) {
     { $set: { username: request.body.username } }
   );
   if (accountUpdate === null) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -130,7 +130,7 @@ exports.change_account_username = async function (request, result) {
   }
 
   if (accountUpdate.modifiedCount === 0) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid account",
@@ -145,7 +145,7 @@ exports.change_account_username = async function (request, result) {
 
 exports.get_account_username = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -156,7 +156,7 @@ exports.get_account_username = async function (request, result) {
     _id: request.session.accountid,
   });
   if (accountDetails === null) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid session",
@@ -173,7 +173,7 @@ exports.get_account_username = async function (request, result) {
 
 exports.change_account = async function (request, result) {
   if (!request.body.accountid) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -186,7 +186,7 @@ exports.change_account = async function (request, result) {
   });
 
   if (accountdetails === null) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid account",
@@ -207,7 +207,7 @@ exports.change_account = async function (request, result) {
 
 exports.check_token_match = async function (request, result) {
   if (!request.session.accountid) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "missing parameter",
@@ -219,7 +219,7 @@ exports.check_token_match = async function (request, result) {
   });
 
   if (accountdetails === null) {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "invalid account",
@@ -232,7 +232,7 @@ exports.check_token_match = async function (request, result) {
       accountid: request.session.accountid,
     })
   } else {
-    result.status(400).send({
+    result.status(204).send({
       success: false,
       status: 400,
       message: "token does not align",
