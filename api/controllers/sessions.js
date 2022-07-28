@@ -30,7 +30,7 @@ exports.simpleAuth = async function (request, result) {
 
   //Assign a new session
   var accountID = tools.generate_string(10);
-  var hasFullAccess = token.activated ?? true;
+  var hasFullAccess = true;
 
   var insertaccount = await accountcollection.insertOne({
     _id: accountID,
