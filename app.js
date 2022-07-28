@@ -23,7 +23,7 @@ app.use(
     saveUninitialized: false, // was false before
     unset: "keep",
     cookie: {
-      secure: config.production, //production on = https should be on
+      secure: false, //production on = https should be on
       maxAge: config.cookieMaxAge,
     },
     store: MongoStore.create({
