@@ -72,8 +72,20 @@ exports.get_account_id = async function (request, result) {
     });
     return;
   }
+  var accountdetails = await accountcollection.findOne({
+    _id: request.session.accountid,
+  });
+  if (accountdetails === null) {
+    result.status(400).send({
+      success: false,
+      status: 400,
+      message: "invalid session",
+    });
+    return;
+  }
   result.json({
     success: true,
+    token: accountdetails.token._id,
     accountid: request.session.accountid,
     fullAccess: request.session.fullAccess ?? false,
   });
@@ -185,3 +197,38 @@ exports.change_account = async function (request, result) {
   request.session.save();
   return;
 };
+
+exports.check_token_match = async function (request, result) {
+  if (!request.session.accountid) {
+    result.status(400).send({
+      success: false,
+      status: 400,
+      message: "missing parameter",
+    });
+    return;
+  }
+  var accountdetails = await accountcollection.findOne({
+    _id: request.session.accountid,
+  });
+
+  if (accountdetails === null) {
+    result.status(400).send({
+      success: false,
+      status: 400,
+      message: "invalid account",
+    });
+    return;
+  }
+  if (accountdetails.token._id === request.body.token) {
+    result.json({
+      success: true,
+      accountid: request.session.accountid,
+    })
+  } else {
+    result.status(400).send({
+      success: false,
+      status: 400,
+      message: "token does not align",
+    });
+  }
+}
