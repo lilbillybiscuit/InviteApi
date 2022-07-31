@@ -212,9 +212,27 @@ exports.getWaterFight = async function (request, result) {
       },
     },
   ];
+  const pipeline2 = [
+    { $match: { rsvp: { $in: ["yes", "maybe"] }, smores: true } },
+    {
+      $group: {
+        _id: "$smores",
+        count: { $sum: 1 },
+      },
+    },
+  ];
   var aggQuery1 = accountcollection.aggregate(pipeline1);
-  for await (const doc of aggQuery1) {
-    result.json({success: true, count: doc.count});
-    return;
+  var aggQuery2 = accountcollection.aggregate(pipeline2);
+  var ret={
+    success: true
   }
+  for await (const doc of aggQuery1) {
+    ret.count = doc.count;
+    ret.waterfightcount=doc.count;
+  }
+  for await (const doc of aggQuery2) {
+    ret.smorescount = doc.count;
+  }
+  result.json(ret);
+  return;
 }

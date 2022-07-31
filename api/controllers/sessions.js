@@ -5,7 +5,6 @@ var accountcollection = database.getdatabase().collection("accounts");
 var tokencollection = database.getdatabase().collection("tokens");
 
 exports.simpleAuth = async function (request, result) {
-  console.log("Server hit");
   //check if the request contains a token
   if (typeof request.body.token == "undefined") {
     result.send({
@@ -90,7 +89,6 @@ exports.get_account_id = async function (request, result) {
     accountid: request.session.accountid,
     fullAccess: request.session.fullAccess ?? false,
   });
-  console.log("getid", request.session.accountid);
 };
 
 exports.change_account_username = async function (request, result) {

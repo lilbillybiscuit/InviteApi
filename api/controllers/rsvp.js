@@ -63,6 +63,7 @@ exports.getCurrentRSVP = async function (request, result) {
       arrivalEnd: accountDetails.arrivalEnd,
       optionalComments: accountDetails.optionalComments ?? "",
       guestCount: accountDetails.guestCount ?? 1,
+      smores: accountDetails.smores ?? false,
     },
   });
 };
@@ -160,6 +161,7 @@ exports.RSVP = async function (request, result) {
 
   if (typeof optionalComments !== "string") validRequest = false;
   if (typeof data.waterfight !== "boolean") validRequest = false;
+  if (data.smores !== null && typeof data.smores !== "boolean") validRequest=false;
   if (guestCount < 1 || guestCount > 5) validRequest = false;
   if (!validRequest) {
     result.status(401).send({
@@ -181,6 +183,7 @@ exports.RSVP = async function (request, result) {
     waterfight: data.waterfight ?? false,
     validEmail: true,
     guestCount: guestCount,
+    smores: data.smores
   };
   var accountUpdate = await accountcollection.updateOne(
     { _id: accountID },
