@@ -101,6 +101,7 @@ async function guestListPending(account) {
       },
       "invitedby.accountID": account._id,
       activated: { $ne: true },
+      activatedoverride: { $ne: true },
     })
     .toArray();
   return pendingList.map((elem) => {
