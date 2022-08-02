@@ -113,6 +113,7 @@ async function guestListPending(account) {
       rsvp: null,
       invitedby: account.name || "Nobody",
       actions: false,
+      rsvpoverride: elem.rsvpoverride ?? null,
     };
   });
 }
