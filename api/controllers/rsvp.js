@@ -215,7 +215,7 @@ exports.RSVP = async function (request, result) {
       rsvp: rsvp,
       guestCount: guestCount,
     });
-    console.log("sent email");
+    console.log("sent email to "+email);
   }
 
   result.json({
