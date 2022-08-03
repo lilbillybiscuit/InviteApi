@@ -34,6 +34,7 @@ exports.send_confirmation = async function (data) {
     Destination: {
       ToAddresses: [data.email],
     },
+    ConfigurationSetName: "gradpartyset",
     TemplateData: JSON.stringify({
       name: data.name,
       rsvp: tools.capitalizeFirstLetter(data.rsvp),
