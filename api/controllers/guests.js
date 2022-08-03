@@ -99,7 +99,9 @@ async function guestListPending(account) {
       uses: {
         $lt: 5,
       },
-      "invitedby.accountID": account._id,
+      "invitedby.accountID": {
+        $in: [account._id, config.mainaccountid],
+      },
       activated: { $ne: true },
       activatedoverride: { $ne: true },
     })
@@ -182,8 +184,10 @@ exports.getTimeline = async function (request, result) {
   ];
   var aggQuery1 = accountcollection.aggregate(pipeline1);
   var aggQuery2 = accountcollection.aggregate(pipeline2);
-  
-  var arr = Array.apply(null, Array(PARTY_DURATION+1)).map(function () {return 0;})
+
+  var arr = Array.apply(null, Array(PARTY_DURATION + 1)).map(function () {
+    return 0;
+  });
   for await (const doc of aggQuery1) {
     arr[doc._id] += doc.count;
   }
@@ -192,9 +196,9 @@ exports.getTimeline = async function (request, result) {
   }
   var ret2 = [arr[0]];
   for (var i = 1; i < arr.length; i++) {
-    ret2.push(ret2[i-1] + arr[i]);
+    ret2.push(ret2[i - 1] + arr[i]);
   }
-  result.json({success: true, timeline: ret2});
+  result.json({ success: true, timeline: ret2 });
 };
 
 exports.getWaterFight = async function (request, result) {
@@ -225,16 +229,16 @@ exports.getWaterFight = async function (request, result) {
   ];
   var aggQuery1 = accountcollection.aggregate(pipeline1);
   var aggQuery2 = accountcollection.aggregate(pipeline2);
-  var ret={
-    success: true
-  }
+  var ret = {
+    success: true,
+  };
   for await (const doc of aggQuery1) {
     ret.count = doc.count;
-    ret.waterfightcount=doc.count;
+    ret.waterfightcount = doc.count;
   }
   for await (const doc of aggQuery2) {
     ret.smorescount = doc.count;
   }
   result.json(ret);
   return;
-}
+};
