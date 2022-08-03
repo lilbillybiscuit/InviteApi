@@ -45,7 +45,7 @@ exports.send_confirmation = async function (data) {
 };
 //This should only be called from a Lambda function (like one subscribed to an SNS topic)
 exports.bounce_email = async function (request, result) {
-  if (!request.params.token || !request.body.email) {
+  if (!request.query.token || !request.body.email) {
     result.status(401).send({
       success: false,
       status: 400,
@@ -53,7 +53,7 @@ exports.bounce_email = async function (request, result) {
     });
     return;
   }
-  if (request.params.token !== config.email_control_key) {
+  if (request.query.token !== config.email_control_key) {
     result.status(401).send({
       success: false,
       status: 400,
@@ -63,7 +63,7 @@ exports.bounce_email = async function (request, result) {
   }
   console.log("Email bounced")
   var email = request.body.email;
-  var updateAccount = await accountcollection.update(
+  var updateAccount = await accountcollection.updateMany(
     {
       _id: email,
     },
@@ -89,7 +89,7 @@ exports.bounce_email = async function (request, result) {
 };
 
 exports.complaint_email = async function (request, result) {
-  if (!request.params.token || !request.body.email) {
+  if (!request.query.token || !request.body.email) {
     result.status(401).send({
       success: false,
       status: 400,
@@ -97,7 +97,7 @@ exports.complaint_email = async function (request, result) {
     });
     return;
   }
-  if (request.params.token !== config.email_control_key) {
+  if (request.query.token !== config.email_control_key) {
     result.status(401).send({
       success: false,
       status: 400,
@@ -107,7 +107,7 @@ exports.complaint_email = async function (request, result) {
   }
   console.log("Email complaint")
   var email = request.body.email;
-  var updateAccount = await accountcollection.update(
+  var updateAccount = await accountcollection.updateMany(
     {
       _id: email,
     },
