@@ -51,7 +51,7 @@ async function guestListOnly() {
       id: tools.generate_string(10),
       name: elem.name,
       shareLink: "Used",
-      created: elem.tokencreated ?? new Date(2022, 6, 1), //July 1, 2022
+      created: elem.rsvpdate ?? new Date(2022, 6, 1), //July 1, 2022
       rsvp: elem.rsvp,
       actions: true,
     };

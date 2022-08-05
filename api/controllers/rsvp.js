@@ -183,7 +183,8 @@ exports.RSVP = async function (request, result) {
     waterfight: data.waterfight ?? false,
     validEmail: true,
     guestCount: guestCount,
-    smores: data.smores
+    smores: data.smores,
+    rsvpdate: new Date(),
   };
   var accountUpdate = await accountcollection.updateOne(
     { _id: accountID },
