@@ -46,6 +46,8 @@ module.exports = function (app) {
   app.route("/api/email/bounce").post(email.bounce_email);
   app.route("/api/email/complaint").post(email.complaint_email);
 
+  var gallery = require("../controllers/gallery");
+  app.route("/api/gallery/time").get(gallery.currentGalleryTime);
   // var debug = require("../controllers/debug");
   // app.route("/api/debug/get").get(debug.get);
   // app.route("/api/debug/post").post(debug.post);
