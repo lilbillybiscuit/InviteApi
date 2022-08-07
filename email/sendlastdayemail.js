@@ -23,7 +23,10 @@ async function run () {
       //allowEmails: true,
       rsvp: {$nin: ["no", null]}
     }).toArray();
-    accounts.forEach(async account => {
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    for (let i = 0; i < accounts.length; i++) {
+      var account = accounts[i];
+      await sleep(500);
       let params = {
         Source: config.email.source,
         Template: config.email.onedayTemplateName,
@@ -35,8 +38,9 @@ async function run () {
           rsvp: capitalizeFirstLetter(account.rsvp),
         }),
       };
-      return AWS_SES.sendTemplatedEmail(params).promise();
-    });
+      console.log(account.email);
+      await AWS_SES.sendTemplatedEmail(params).promise();
+    }
   } catch (error) {
     console.log(error);
   } finally {
