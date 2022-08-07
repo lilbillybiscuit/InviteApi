@@ -115,6 +115,14 @@ exports.delete_token = async function (request, result) {
     });
     return;
   }
+  if (token.invitedby.accountID !== request.session.accountid) {
+    result.status(401).send({
+      success: false,
+      status: 400,
+      message: "invalid token",
+    });
+    return;
+  }
   var deleteToken = await tokencollection.deleteOne({
     _id: request.body.token,
   });
