@@ -113,7 +113,7 @@ async function guestListPending(account) {
       shareLink: `${config.websiteUrl}/${elem._id}`,
       created: elem.created,
       rsvp: null,
-      invitedby: (elem.invitedby.username === config.mainaccountid)
+      invitedby: (elem.invitedby.accountID === config.mainaccountid)
       ? config.mainaccountname : (account.name || "Nobody"),
       actions: false,
       rsvpoverride: elem.rsvpoverride ?? null,
